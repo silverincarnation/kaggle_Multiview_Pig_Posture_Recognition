@@ -59,4 +59,18 @@ The dataset is collected from multiple camera angles, and the distribution of ca
 
 To better simulate a real-world deployment scenario, the validation set is constructed to mimic the camera-view distribution and posture distribution observed in real farm data. By aligning the validation distribution with realistic conditions, we aim to obtain a more reliable estimate of model performance when deployed in practice.
 
+# Problem 1: Bounding Box Regression
 
+To validate the quality of the provided bounding boxes, we train object detectors to **re-predict** the bounding boxes and compare them against the ground-truth annotations. We experiment with two models: **YOLOv8** and **SSD300 (VGG16 backbone)**.
+
+**Optimizers**
+- **SSD300**: AdamW (lr = 0.001111, weight_decay = 0.0005)
+- **YOLOv8**: AdamW (lr = 0.001111, momentum = 0.9)
+
+Below are typical prediction examples:
+
+![YOLO Prediction](pictures/yolo.jpg)
+
+![SSD Prediction](pictures/ssd.jpg)
+
+Qualitatively, YOLOv8 produces tighter and more accurate boxes, while SSD often fails to localize the pigs correctly. This is also reflected in the quantitative metric: we compute the mean IoU over all images, where **YOLOv8 achieves 0.87**, while **SSD300 achieves 0.079**.
