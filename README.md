@@ -59,9 +59,9 @@ The dataset is collected from multiple camera angles, and the distribution of ca
 
 To better simulate a real-world deployment scenario, the validation set is constructed to mimic the camera-view distribution and posture distribution observed in real farm data. By aligning the validation distribution with realistic conditions, we aim to obtain a more reliable estimate of model performance when deployed in practice.
 
-# Problem 1: Bounding Box Regression
+## Problem 1: Bounding Box Regression (preliminary study)
 
-To validate the quality of the provided bounding boxes, we train object detectors to **re-predict** the bounding boxes and compare them against the ground-truth annotations. We experiment with two models: **YOLOv8** and **SSD300 (VGG16 backbone)**.
+To validate the quality of the provided bounding boxes, we train object detectors to re-predict the bounding boxes and compare them against the ground-truth annotations. We experiment with two models: `YOLOv8` and `SSD300 (VGG16 backbone)`.
 
 **Optimizers**
 - **SSD300**: AdamW (lr = 0.001111, weight_decay = 0.0005)
@@ -71,6 +71,30 @@ Below are typical prediction examples:
 
 ![YOLO Prediction](pictures/yolo.jpg)
 
-![SSD Prediction](pictures/ssd.jpg)
+![SSD Prediction](pictures/SSD.jpg)
 
 Qualitatively, YOLOv8 produces tighter and more accurate boxes, while SSD often fails to localize the pigs correctly. This is also reflected in the quantitative metric: we compute the mean IoU over all images, where **YOLOv8 achieves 0.87**, while **SSD300 achieves 0.079**.
+
+## Problem 2： Posture Classification
+
+We train two image classification backbones for pig posture recognition: `facebook/convnextv2-tiny-22k-224` and `google/vit-base-patch16-224`. We adpt several strategies including:
+
+**Preprocessing & Augmentation.** Each pig is cropped using the provided bounding boxes, resized to 224×224, and augmented with `RandAugment(num_ops=2, magnitude=7)` to improve robustness to lighting, viewpoint, and background variations.
+
+**Training Strategy.** We adopt common fine-tuning practices, including a **freeze-then-unfreeze schedule** and **learning-rate decay**, to stabilize optimization and improve generalization.
+
+More implementation details and hyperparameters can be found in:
+- `vipig.ipynb`
+- `covpig.ipynb`
+
+### Input Visualization
+
+**Original images (with bounding boxes).**  
+Note that a single image may correspond to multiple rows in the dataset because multiple pigs can appear in the same photo.
+
+![Random Pictures](pictures/random_picture.jpg)
+
+**Model input.**  
+Each pig is cropped using the corresponding bounding box and resized before being fed into the model.
+
+![Model Input](pictures/model_look.jpg)
