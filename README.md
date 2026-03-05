@@ -98,3 +98,26 @@ Note that a single image may correspond to multiple rows in the dataset because 
 Each pig is cropped using the corresponding bounding box and resized before being fed into the model.
 
 ![Model Input](pictures/model_look.jpg)
+
+## Conclusion
+
+We compare the performance of **ConvNeXtV2** and **Vision Transformer** for pig posture classification.
+
+### ConvNeXtV2 Results
+
+![ConvNeXtV2 Classification](pictures/coClassification.jpg)
+
+![ConvNeXtV2 Confusion Matrix](pictures/coconfusion.jpg)
+
+### Vision Transformer Results
+
+![ViT Classification](pictures/viClassification.jpg)
+
+![ViT Confusion Matrix](pictures/viconfusion.jpg)
+
+From the results, ConvNeXtV2 performs noticeably better than ViT. In particular, ConvNeXtV2 is able to correctly identify the **Sitting** posture, while ViT struggles to capture this class and tends to misclassify it as other postures.
+
+## Author
+Kaixuan Chen  
+Northwestern University  
+M.S. in Machine Learning and Data Science
