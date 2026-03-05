@@ -1,3 +1,3 @@
 # kaggle_Multiview_Pig_Posture_Recognition
 
-!([rank]picture/rank.jpg)
+<img src="picture/rank.png" width="300">
